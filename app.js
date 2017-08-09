@@ -2,6 +2,9 @@ new Vue({
 	el: '#game',
 	data: {
 		start: false,
+		hasWinner: false,
+		isPlayerTurn: true,
+		announcement: '',
 		logs: [],
 		p1: {
 			name: 'Player',
@@ -29,15 +32,18 @@ new Vue({
 		}
 	},
 	methods: {
-		giveUp: function() {
-			if (confirm('Give up already?') == true) {
-				this.reset();
+		reset: function(text){		
+			if (typeof text !== 'undefined') {
+				if (confirm(text) == false) {
+					return;
+				}
 			}
-		},
-		reset: function(){			
+
 			this.p1.health = this.p1.maxHealth
 		    this.p2.health = this.p2.maxHealth
 		    this.logs = []
+		    this.hasWinner = false
+		    this.isPlayerTurn = true
 		    this.start = false
 		},
 		playerTurn: function(event) {				
@@ -47,28 +53,35 @@ new Vue({
 				this.heal(this.p1)				
 			} else {				
 				this.specialAttack(this.p1, this.p2)
-			}								
-			this.monsterTurn();			
+			}
+			this.checkWinner();								
+			this.isPlayerTurn = false;
+			setTimeout(this.monsterTurn, 1000);			
 		},		
 		monsterTurn: function() {
-			if (this.start == true) {
+			if (this.hasWinner == false) {
 				var events = ['attack', 'attack', 'attack', 'heal', 'heal', 'special attack'];
 				var event = events[Math.floor(Math.random()*events.length)];			
-				if (event == 'attack') {				
-					this.attack(this.p2, this.p1)
-				} else if (event == 'heal') {
+				
+				if (event == 'special attack') {									
+					this.specialAttack(this.p2, this.p1)
+				} else if (event == 'heal' && (this.p2.health < this.p2.healMin)) {
 					this.heal(this.p2)				
 				} else {
-					this.specialAttack(this.p2, this.p1)
+					this.attack(this.p2, this.p1)
 				}
+				this.checkWinner();
+				this.isPlayerTurn = true
 			}								
 		},
 		attack: function(player, target) {
 			AttackPoint = this.generateRandomNumber(player.attackMin,player.attackMax)
 
+			var sound = document.getElementById("attack");
+			sound.play();
+
 			if ( (target.health - AttackPoint) < 0) {
-				alert(player.name+' wins!')
-				this.reset()							
+				target.health = 0											
 			} else {
 				target.health -= AttackPoint	
 
@@ -81,9 +94,11 @@ new Vue({
 		specialAttack: function(player, target) {
 			specialAttackPoint = this.generateRandomNumber(player.spcAttackMin,player.spcAttackMax)
 
+			var sound = document.getElementById("special");
+			sound.play();
+
 			if ( (target.health - specialAttackPoint) < 0) {
-				alert(player.name+' wins!')
-				this.reset()						
+				target.health = 0				
 			} else {
 				target.health -= specialAttackPoint	
 
@@ -93,18 +108,43 @@ new Vue({
 				});
 			}			
 		},
-		heal: function(player) {
-			healPoint = this.generateRandomNumber(player.healMin, player.healMax)
-			if ( (player.health + healPoint) > player.maxHealth) {
-				player.health == player.maxHealth
-			} else {
-				player.health += healPoint	
+		checkWinner: function() {
+			
+			if (this.p1.health == 0) {
+				this.announcement = this.p2.name+' wins!'	
+				var sound = document.getElementById("lost");          		
 			}
 
-			this.logs.push({
-				class: player.logClass,
-				message: player.name+' heal for '+healPoint
-			});					
+			if (this.p2.health == 0) {
+				this.announcement = this.p1.name+' wins!'
+				var sound = document.getElementById("win");          		
+			}
+
+			if (this.p1.health == 0 || this.p2.health == 0) {
+				this.hasWinner = true	
+				sound.play();
+			}		
+
+			return;				
+		},
+		heal: function(player) {
+			if (player.health != 0) {
+				healPoint = this.generateRandomNumber(player.healMin, player.healMax)
+				var sound = document.getElementById("heal");
+				
+				if ( (player.health + healPoint) > player.maxHealth) {
+					player.health == player.maxHealth
+				} else {
+					player.health += healPoint	
+				}
+
+				sound.play();
+
+				this.logs.push({
+					class: player.logClass,
+					message: player.name+' heal for '+healPoint
+				});
+			}							
 		},		
 		generateRandomNumber: function(min, max) {
 			return Math.floor(Math.random() * (max - min + 1)) + min;

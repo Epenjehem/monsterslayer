@@ -17,13 +17,20 @@
 				<div class="pgrsbr"><span :style="{width: p2.health+'%'}">{{p2.health}}</span></div>
 			</div>
 		</div>
-		<div id="ctrl">
+		<div id="anct" v-if="hasWinner">
+			<h1>{{announcement}}</h1>
+			<button class="white" @click="reset()">Start Again</button>
+		</div>
+		<div id="ctrl" v-if="!hasWinner">
 			<button class="green" v-if="!start" @click="start = !start">Start New Game</button>
 			<template v-else>
-				<button class="red" @click="playerTurn('attack')">Attack</button>
-				<button class="orange" @click="playerTurn('special attack')">Special Attack</button>
-				<button class="green" @click="playerTurn('heal')">Heal</button>
-				<button class="white" @click="giveUp()">Give Up</button>
+				<div v-show="isPlayerTurn">
+					<button class="red" :disabled="!isPlayerTurn" @click="playerTurn('attack')">Attack</button>
+					<button class="orange" :disabled="!isPlayerTurn" @click="playerTurn('special attack')">Special Attack</button>
+					<button class="green" :disabled="!isPlayerTurn" @click="playerTurn('heal')">Heal</button>
+					<button class="white" :disabled="!isPlayerTurn" @click="reset('Give up already?')">Give Up</button>
+				</div>				
+				<h2 v-show="!isPlayerTurn">{{p2.name}} turns!</h2>				
 			</template>
 		</div>
 		<div id="log">
@@ -31,7 +38,12 @@
 				<div :class="log.class">{{log.message}}</div>
 			</template>			
 		</div>
-	</div>
+	</div>	
+	<audio id="win" src="https://www.soundjay.com/human/laughter-1.mp3" autostart="false" ></audio>
+	<audio id="lost" src="https://www.soundjay.com/misc/fail-trombone-01.mp3" autostart="false" ></audio>	
+	<audio id="attack" src="https://www.soundjay.com/misc/whip-whoosh-01.mp3" autostart="false" ></audio>
+	<audio id="special" src="https://www.soundjay.com/misc/squeeze-toy-2.mp3" autostart="false" ></audio>	
+	<audio id="heal" src="https://www.soundjay.com/misc/magic-chime-01.mp3" autostart="false" ></audio>	
 	<script src="app.js"></script>
 </body>
 </html>
