@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Monster Slayer</title>
+	<script src="https://npmcdn.com/vue/dist/vue.js"></script>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div id="game">
+		<div id="health">
+			<div>
+				<h2>{{p1.name}}</h2>
+				<div class="pgrsbr"><span :style="{width: p1.health+'%'}">{{p1.health}}</span></div>
+			</div><div>
+				<h2>{{p2.name}}</h2>
+				<div class="pgrsbr"><span :style="{width: p2.health+'%'}">{{p2.health}}</span></div>
+			</div>
+		</div>
+		<div id="ctrl">
+			<button class="green" v-if="!start" @click="start = !start">Start New Game</button>
+			<template v-else>
+				<button class="red" @click="playerTurn('attack')">Attack</button>
+				<button class="orange" @click="playerTurn('special attack')">Special Attack</button>
+				<button class="green" @click="playerTurn('heal')">Heal</button>
+				<button class="white" @click="giveUp()">Give Up</button>
+			</template>
+		</div>
+		<div id="log">
+			<template v-for="log in logs">
+				<div :class="log.class">{{log.message}}</div>
+			</template>			
+		</div>
+	</div>
+	<script src="app.js"></script>
+</body>
+</html>

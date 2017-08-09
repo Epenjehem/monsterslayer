@@ -1,0 +1,77 @@
+html, body {
+	margin: 0;
+	font-family: Arial;
+}
+#game {
+	max-width: 900px;
+	margin: 40px auto 0 auto;
+}
+#health > div {
+	display: inline-block;
+	width: 50%;
+	text-align: center;
+}
+#health h2 {
+	margin-top: 0;
+	margin-bottom: 20px;
+	text-transform: uppercase;
+}
+.pgrsbr {
+	width: 80%;	
+	background-color: #eee;
+	margin: 0 auto;	
+}
+.pgrsbr span {
+	color: #fff;
+	background-color: green;
+	display: block;
+	padding: 10px 0;
+	transition : width .5s ease;
+}
+#ctrl {
+	text-align: center;
+	margin-top: 30px;
+	border: 1px solid #eee;
+}
+#ctrl button {
+	text-transform: uppercase;
+	padding: 7px;	
+	margin: 10px;
+	border: 1px solid #eee;
+	cursor: pointer;
+}
+.red {
+	background-color: #ff5252;
+}
+.green {
+	background-color: #4caf50;
+}
+.orange {
+	background-color: #ff9800;
+}
+.white {
+	background-color: #fff;
+}
+#log {
+	margin-top: 30px;
+	border: 1px solid #eee;
+	text-align: center;
+	text-transform: uppercase;
+	font-weight: bold;
+	padding: 20px 40px;
+	font-size: smaller;
+}
+#log > div {
+	padding: 3px 0; 
+}
+#log > div:not(:last-child) {
+	margin-bottom: 5px;
+}
+div.plyr {
+	background-color: #48a5ef;
+	color: #193ff5;
+}
+div.mnstr {
+	background-color: #ff5252;
+	color: #770101;	
+}
